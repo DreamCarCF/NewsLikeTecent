@@ -8,19 +8,8 @@
 
 #import "ViewController.h"
 #import "YPReusableController.h"
-#import "TestViewControllerOne.h"
-#import "TestViewControllerTwo.h"
-#import "TestViewControllerThree.h"
-#import "TestViewControllerFour.h"
-#import "TestViewControllerFive.h"
-#import "TestViewControllerSix.h"
-#import "TestViewControllerSeven.h"
-#import "TestViewController_10.h"
-#import "TestViewController_11.h"
 #import "TestViewControllerEight.h"
-#import "TestViewControllerNine.h"
-#import "TestViewControllerNine_12.h"
-#import "TestViewControllerNine_13.h"
+#import "TestViewController_10.h"
 #import "YPSideController.h"
 #import "ConnectServer.h"
 #import "YPChannelCustomController.h"
@@ -30,7 +19,8 @@
 #import "YPCacheTool.h"
 #import "PaiXuViewController.h"
 #import "TouchViewModel.h"
-@interface ViewController ()<UIScrollViewDelegate>
+#import "UserLogin.h"
+@interface ViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
 {
     NSString *QRUrl;
     NSMutableArray *titleArray;
@@ -38,6 +28,7 @@
     NSMutableArray *subViewController;
     YPReusableController *resusableVc;
     NSArray * _modelArr1;
+    NSString * imgStr;
 }
 @end
 
@@ -58,8 +49,20 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    NSUserDefaults *usermid = [NSUserDefaults standardUserDefaults];
+    NSString* midStr = [usermid objectForKey:@"mid"];
+   
+    if (!midStr) {
+        imgStr = @"176-2.png";
+    }else{
+        imgStr = @"88-1.png";
+    }
      self.navigationController.navigationBar.hidden = YES;
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"person0"]) {
+    NSString * string = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * filePath = [string stringByAppendingString:@"/modelArray0.swh"];
+    
+    _modelArr1 = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+    if (_modelArr1) {
         [self gosetAgianVC];
     }else{
         [self setDataWithNet];
@@ -129,7 +132,14 @@
         }else{
             NSLog(@"未知错误");
         }
-    }else
+    }else if ([requestType isEqualToString:@"get_out"])
+    {
+        if([[resultDict objectForKey:@"status"] isEqualToString:@"success"]){
+        [SVProgressHUD dismiss];
+            [SVProgressHUD showInfoWithStatus:resultDict[@"msg"]];
+        }
+    }
+    else
     {
         NSLog(@"网络错误");
     }
@@ -197,7 +207,7 @@
     resusableVc.subViewControllers = [subViewController copy];
     resusableVc.currentIndex = 0;
     
-    resusableVc.leftImage_normal = [UIImage imageNamed:@"profile_btn_sns_focus.png"];
+    resusableVc.leftImage_normal = [UIImage imageNamed:imgStr];
     
     resusableVc.rightImage_normal = [UIImage imageNamed:@"settings"];
     
@@ -209,13 +219,48 @@
   
     
     [resusableVc setLeftBtnTouchBlock:^{
-       
-        resusableVc.currentIndex=0;
+        if ([imgStr isEqualToString:@"176-2.png"]) {
+            UserLogin * logVC = [UserLogin new];
+            
+            [self.navigationController pushViewController:logVC animated:YES];
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确认退出登录?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            [alert show];
+        }
+        
     }];
 }
 
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        NSLog(@"取消");
+    }else
+    {
+        
+       
+        imgStr = @"176-2.png";
+        resusableVc.leftImage_normal = [UIImage imageNamed:imgStr];
+        QRUrl = KNewOutApi;
+        ConnectServer * cs = [ConnectServer shareInstance];
+        NSMutableDictionary *mulDic = [[NSMutableDictionary alloc] init];
+        
+    
+        [mulDic setValue:[[NSUserDefaults standardUserDefaults] objectForKey:@"mid"]forKey:@"mid"];
+        [mulDic setValue:@"logout" forKey:@"act"];
+        
 
+        cs.user_info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:@"get_out",@"requestType", nil];
+        [cs sendJsonData:mulDic baseURLWithString:QRUrl FromViewController:self];
+        [SVProgressHUD show];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"mid"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        NSLog(@"确定退出");
+    }
+}
 
 
 - (void)gosetVC
@@ -261,8 +306,9 @@
     
     resusableVc.subViewControllers = [subViewController copy];
     resusableVc.currentIndex = 0;
+  
    
-    resusableVc.leftImage_normal = [UIImage imageNamed:@"profile_btn_sns_focus.png"];
+    resusableVc.leftImage_normal = [UIImage imageNamed:imgStr];
 
     resusableVc.rightImage_normal = [UIImage imageNamed:@"settings"];
    
@@ -276,8 +322,14 @@
 
     
     [resusableVc setLeftBtnTouchBlock:^{
-        // 开启侧滑功能
-        resusableVc.currentIndex=0;
+        if ([imgStr isEqualToString:@"176-2.png"]) {
+            UserLogin * logVC = [UserLogin new];
+            [self.navigationController pushViewController:logVC animated:YES];
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确认退出登录?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            [alert show];
+        }
     }];
 }
 
@@ -291,43 +343,3 @@
 
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

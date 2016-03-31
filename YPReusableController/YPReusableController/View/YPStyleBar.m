@@ -244,7 +244,7 @@
     // container.subview -> indicateView
     UIView *ellipseIndicateView = [[UIView alloc] init];
     self.ellipseIndicateView = ellipseIndicateView;
-    [self.itemContainerView addSubview:ellipseIndicateView];
+//    [self.itemContainerView addSubview:ellipseIndicateView];
     ellipseIndicateView.layer.cornerRadius = 10;
     ellipseIndicateView.backgroundColor = YPColor_RGBA(200, 200, 200, 0.3);
     ellipseIndicateView.userInteractionEnabled = NO;

@@ -5,7 +5,7 @@
 //  Created by Sam Feng on 15/8/27.
 //  Copyright (c) 2015年 beloved999. All rights reserved.
 //
-
+#define kLoginUrl @"http://apiv.beloved999.com/newapi/" //登陆
 #import "FindPasswordVC.h"
 #import "ConnectServer.h"
 #import "FindPwdChangepwd.h"

@@ -26,7 +26,7 @@
         
         self.ThreeimgTitleLabel.frame = CGRectMake(5, 2, VIEW_WIDTH-2, 30);
 
-        self.ThreeimgTitleLabel.font = [UIFont boldSystemFontOfSize:18];
+        self.ThreeimgTitleLabel.font = [UIFont systemFontOfSize:18];
       
 
         [self.contentView addSubview:self.ThreeimgTitleLabel];
@@ -38,20 +38,20 @@
             make.left.mas_equalTo(5);
             make.bottom.mas_equalTo(-30);
             make.width.mas_equalTo(self.ThreeimgSecimg);
-            make.height.mas_equalTo(120);
+            make.height.mas_equalTo(90);
         }];
         [self.ThreeimgThirdimg mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.mas_equalTo(-5);
             make.bottom.mas_equalTo(-30);
             make.width.mas_equalTo(self.ThreeimgFirstimg);
-            make.height.mas_equalTo(120);
+            make.height.mas_equalTo(90);
         }];
         [self.ThreeimgSecimg mas_makeConstraints:^(MASConstraintMaker *make) {
            make.bottom.mas_equalTo(-30);
             make.left.equalTo(self.ThreeimgFirstimg.mas_right).offset(5);
             make.right.equalTo(self.ThreeimgThirdimg.mas_left).offset(-5);
             make.width.mas_equalTo(self.ThreeimgThirdimg);
-            make.height.mas_equalTo(120);
+            make.height.mas_equalTo(90);
         }];
         
         
